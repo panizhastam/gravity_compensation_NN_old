@@ -32,8 +32,8 @@ CB_TIME = 3
 DATA_PIN_Elbow = 2  
 STATE_PIN_Elbow = 3
 
-DATA_PIN_ShFE = 18  
-STATE_PIN_ShFE = 19
+DATA_PIN_ShFE = 19  
+STATE_PIN_ShFE = 18
 
 DATA_PIN_ShAA = 20 
 STATE_PIN_ShAA = 21
@@ -95,10 +95,11 @@ def compute_angle(pin_number,pin_value,joint):
     s =""
     for x in count:
         s+= str(x) + ': '+ str(count[x]*360/1024) + '  ' # in (Deg)
+        out[x] = count[x]*(360/1024)*(math.pi/180) # in (rad)
         
     s+="\n"
-    print(s)
-    # out[x] = count[x]*(360/1024)*(math.pi/180) # in (rad)
+    # print(s)   
+    # print(out)
     prev_pin[joint][0] = pin_value
     # return out
 
@@ -181,8 +182,8 @@ board.digital_write(DRIVER_PIN1_SHAA, 0)
 board.digital_write(DRIVER_PIN2_SHAA, 1)
 
 
-# path = "trainedmodels/ETR2.sav"
-# loaded_model = pickle.load(open(path, 'rb'))
+path = "trainedmodels/MLP1.sav"
+loaded_model = pickle.load(open(path, 'rb'))
 
 
 print('Enter Control-C to quit.')
@@ -190,13 +191,14 @@ print('Enter Control-C to quit.')
 
 try:
     while True:
-        # x = out.values()
-        # x = list(x)
-        # x = np.array(x)
-        # x = x.reshape(1,3)
-        # teout = torch.Tensor(x)
-        # result = loaded_model.predict(teout)
-        # print(count)
+        x = out.values()
+        x = list(x)
+        x = np.array(x)
+        x = x.reshape(1,3)
+        teout = torch.Tensor(x)
+        result = loaded_model.predict(teout)
+        print(result)
+        board.analog_write(PRESSURE_PIN_SHFE, 0)
         time.sleep(.00001)
 except KeyboardInterrupt:
     board.shutdown()
