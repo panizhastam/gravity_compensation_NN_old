@@ -26,8 +26,8 @@ CB_TIME = 3
 DATA_PIN_Elbow = 2  
 STATE_PIN_Elbow = 3
 
-DATA_PIN_ShFE = 18  
-STATE_PIN_ShFE = 19
+DATA_PIN_ShFE = 19  
+STATE_PIN_ShFE = 18
 
 DATA_PIN_ShAA = 20 
 STATE_PIN_ShAA = 21
@@ -83,7 +83,7 @@ def compute_angle(pin_number,pin_value,joint):
                     count[joint] -= 1    
     s =""
     for x in count:
-        s+= str(x) + ': '+ str(count[x]*360/1024) + "..."
+        s+= str(x) + ': '+ str(count[x]*360/1024) + "   "
         
     s+="\n"
     print(s)

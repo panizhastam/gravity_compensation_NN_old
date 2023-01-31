@@ -2,8 +2,13 @@ import sys
 import time
 import pickle
 import math
+import torch
+import numpy as np
 
 from telemetrix import telemetrix
+
+import warnings
+# warnings.filterwarnings("ignore")
 
 """
 Monitor a digital input pin
@@ -89,13 +94,13 @@ def compute_angle(pin_number,pin_value,joint):
                     count[joint] -= 1    
     s =""
     for x in count:
-        s+= str(x) + ': '+ str(count[x]*360/1024) # in (Deg)
+        s+= str(x) + ': '+ str(count[x]*360/1024) + '  ' # in (Deg)
         
     s+="\n"
-    # print(s)
-    out[x] = count[x]*(360/1024)*(math.pi/180) # in (rad)
+    print(s)
+    # out[x] = count[x]*(360/1024)*(math.pi/180) # in (rad)
     prev_pin[joint][0] = pin_value
-    return out
+    # return out
 
 def the_callback_elbow(data):
     """
@@ -175,15 +180,23 @@ board.digital_write(DRIVER_PIN2_SHFE, 1)
 board.digital_write(DRIVER_PIN1_SHAA, 0)
 board.digital_write(DRIVER_PIN2_SHAA, 1)
 
-path = "trainedmodels/ETR2.sav"
-loaded_model = pickle.load(open(path, 'rb'))
-result = loaded_model.predict()
+
+# path = "trainedmodels/ETR2.sav"
+# loaded_model = pickle.load(open(path, 'rb'))
+
 
 print('Enter Control-C to quit.')
 
 
 try:
     while True:
+        # x = out.values()
+        # x = list(x)
+        # x = np.array(x)
+        # x = x.reshape(1,3)
+        # teout = torch.Tensor(x)
+        # result = loaded_model.predict(teout)
+        # print(count)
         time.sleep(.00001)
 except KeyboardInterrupt:
     board.shutdown()
