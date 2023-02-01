@@ -127,6 +127,8 @@ def the_callback_shaa(data):
 
 # def Elbow_read():
 board = telemetrix.Telemetrix(arduino_wait=2)
+
+
 # setting Encoder input PINs
 board.set_pin_mode_digital_input(DATA_PIN_Elbow, the_callback_elbow)
 board.set_pin_mode_digital_input(STATE_PIN_Elbow, the_callback_elbow)
@@ -144,38 +146,74 @@ board.set_pin_mode_digital_input(STATE_PIN_ShAA, the_callback_shaa)
 
 
 # Setting Torque output PINs
-board.set_pin_mode_digital_output(PRESSURE_PIN_ELBOW)
-board.set_pin_mode_digital_output(DRIVER_PIN1_ELBOW)
-board.set_pin_mode_analog_output(DRIVER_PIN2_ELBOW)
 
-board.set_pin_mode_digital_output(PRESSURE_PIN_SHFE)
-board.set_pin_mode_digital_output(DRIVER_PIN1_SHFE)
-board.set_pin_mode_analog_output(DRIVER_PIN2_SHFE)
 
-board.set_pin_mode_digital_output(PRESSURE_PIN_SHAA)
-board.set_pin_mode_digital_output(DRIVER_PIN1_SHAA)
-board.set_pin_mode_analog_output(DRIVER_PIN2_SHAA)
+
+
+
 
 
 # Setting PIN values
-board.digital_write(DRIVER_PIN1_ELBOW, 0)
-board.digital_write(DRIVER_PIN2_ELBOW, 1)
-
-board.digital_write(DRIVER_PIN1_SHFE, 0)
-board.digital_write(DRIVER_PIN2_SHFE, 1)
-
-board.digital_write(DRIVER_PIN1_SHAA, 0)
-board.digital_write(DRIVER_PIN2_SHAA, 1)
 
 
 
+
+
+
+
+def torque_control(joint,input):
+    if joint == 'Elbow':
+        board.set_pin_mode_digital_output(DRIVER_PIN1_ELBOW)
+        board.set_pin_mode_digital_output(DRIVER_PIN2_ELBOW)
+        board.digital_write(DRIVER_PIN1_ELBOW, 0)
+        board.digital_write(DRIVER_PIN2_ELBOW, 1)
+        board.set_pin_mode_analog_output(PRESSURE_PIN_ELBOW)
+        board.analog_write(PRESSURE_PIN_ELBOW, input)
+    if joint == 'ShFE':
+        board.set_pin_mode_digital_output(DRIVER_PIN1_SHFE)
+        board.set_pin_mode_digital_output(DRIVER_PIN2_SHFE)
+        board.digital_write(DRIVER_PIN1_SHFE, 0)
+        board.digital_write(DRIVER_PIN2_SHFE, 1)
+        board.set_pin_mode_analog_output(PRESSURE_PIN_SHFE)
+        board.analog_write(PRESSURE_PIN_SHFE, input)        
+    if joint == 'ShAA':
+        board.set_pin_mode_digital_output(DRIVER_PIN1_SHAA)
+        board.set_pin_mode_digital_output(DRIVER_PIN2_SHAA)
+        board.digital_write(DRIVER_PIN1_SHAA, 0)
+        board.digital_write(DRIVER_PIN2_SHAA, 1)
+        board.set_pin_mode_analog_output(PRESSURE_PIN_SHAA)
+        board.analog_write(PRESSURE_PIN_SHAA, input)
+        
+        
 print('Enter Control-C to quit.')
 
+# back to rest position
 try:
     while True:
-        board.analog_write(PRESSURE_PIN_SHFE, 0)
-        time.sleep(.00001)
+        time.sleep(.001)
+        
+        torque_control('ShFE',0)
+        torque_control('ShAA',0)
+        torque_control('Elbow',0)
 except KeyboardInterrupt:
     board.shutdown()
     sys.exit(0)
 
+# All joints moving together
+# try:
+#     print('Going up...')
+#     for i in range(255):
+#         torque_control('ShFE',i)
+#         torque_control('ShAA',i)
+#         torque_control('Elbow',i)
+#         print(i/2)
+        # time.sleep(.5)  # controlling the frequency
+#     print('Going down...')
+#     for i in range(255, -1, -1):
+#         board.analog_write(PRESSURE_PIN_ELBOW, i)
+#         time.sleep(.5)
+
+
+# except KeyboardInterrupt:
+#     board.shutdown()
+#     sys.exit(0)

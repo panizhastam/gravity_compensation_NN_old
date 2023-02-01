@@ -158,17 +158,17 @@ board.set_pin_mode_digital_input(STATE_PIN_ShAA, the_callback_shaa)
 
 
 # Setting Torque output PINs
-board.set_pin_mode_digital_output(PRESSURE_PIN_ELBOW)
+board.set_pin_mode_analog_output(PRESSURE_PIN_ELBOW)
 board.set_pin_mode_digital_output(DRIVER_PIN1_ELBOW)
-board.set_pin_mode_analog_output(DRIVER_PIN2_ELBOW)
+board.set_pin_mode_digital_output(DRIVER_PIN2_ELBOW)
 
-board.set_pin_mode_digital_output(PRESSURE_PIN_SHFE)
+board.set_pin_mode_analog_output(PRESSURE_PIN_SHFE)
 board.set_pin_mode_digital_output(DRIVER_PIN1_SHFE)
-board.set_pin_mode_analog_output(DRIVER_PIN2_SHFE)
+board.set_pin_mode_digital_output(DRIVER_PIN2_SHFE)
 
-board.set_pin_mode_digital_output(PRESSURE_PIN_SHAA)
+board.set_pin_mode_analog_output(PRESSURE_PIN_SHAA)
 board.set_pin_mode_digital_output(DRIVER_PIN1_SHAA)
-board.set_pin_mode_analog_output(DRIVER_PIN2_SHAA)
+board.set_pin_mode_digital_output(DRIVER_PIN2_SHAA)
 
 
 # Setting PIN values
@@ -182,8 +182,8 @@ board.digital_write(DRIVER_PIN1_SHAA, 0)
 board.digital_write(DRIVER_PIN2_SHAA, 1)
 
 
-path = "trainedmodels/MLP1.sav"
-loaded_model = pickle.load(open(path, 'rb'))
+# path = "trainedmodels/MLP1.sav"
+# loaded_model = pickle.load(open(path, 'rb'))
 
 
 print('Enter Control-C to quit.')
@@ -191,16 +191,19 @@ print('Enter Control-C to quit.')
 
 try:
     while True:
-        x = out.values()
-        x = list(x)
-        x = np.array(x)
-        x = x.reshape(1,3)
-        teout = torch.Tensor(x)
-        result = loaded_model.predict(teout)
-        print(result)
-        board.analog_write(PRESSURE_PIN_SHFE, 0)
+        # x = out.values()
+        # x = list(x)
+        # x = np.array(x)
+        # x = x.reshape(1,3)
+        # teout = torch.Tensor(x)
+        # result = loaded_model.predict(teout)
+        # print(result)
+        board.analog_write(PRESSURE_PIN_ELBOW, 100)
         time.sleep(.00001)
 except KeyboardInterrupt:
     board.shutdown()
     sys.exit(0)
+
+
+
 
